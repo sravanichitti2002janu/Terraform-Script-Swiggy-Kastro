@@ -1,5 +1,5 @@
-resource "aws_security_group" "Project-SG" {
-  name        = "Project-SG"
+resource "aws_security_group" "Security-Group-Project" {
+  name        = "Security-Group-Project"
   description = "Open 22,443,80,8080,9000"
 
   # Define a single ingress rule to allow traffic on all specified ports
@@ -25,20 +25,20 @@ resource "aws_security_group" "Project-SG" {
   }
 
   tags = {
-    Name = "Project-SG"
+    Name = "Security-Group-Project"
   }
 }
 
 
 resource "aws_instance" "web" {
-  ami                    = "ami-001f2488b35ca8aad"
-  instance_type          = "t2.large"
-  key_name               = "Kastro"
+  ami                    = "ami-0d97d7f07b25dd693"
+  instance_type          = "m7i-flex.large"
+  key_name               = "chitti"
   vpc_security_group_ids = [aws_security_group.Project-SG.id]
   user_data              = templatefile("./resource.sh", {})
 
   tags = {
-    Name = "Kastro"
+    Name = "sravani-project"
   }
   root_block_device {
     volume_size = 30
