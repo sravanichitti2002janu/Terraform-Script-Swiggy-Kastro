@@ -1,11 +1,11 @@
 pipeline{
     agent any
     tools{
-        jdk 'jdk21'
+        jdk 'jdk17'
         nodejs 'node23'
     }
     environment {
-        SCANNER_HOME=tool 'Code-Quality-Analysis'
+        SCANNER_HOME=tool 'sonar-scanner'
     }
     stages {
         stage('clean workspace'){
@@ -15,7 +15,7 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git 'https://github.com/KastroVKiran/Terraform-Script-Swiggy-Kastro.git'
+                git 'https://github.com/KastroVKiran/DevOps-Project-Swiggy.git'
             }
         }
         stage("Sonarqube Analysis "){
@@ -53,21 +53,21 @@ pipeline{
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker-creds', toolName: 'docker'){   
-                       sh 'docker build -t swiggy sravanismily/swiggy:latest .'
-                       sh 'docker tag swiggy sravanismily/swiggy:latest '
-                       sh 'docker push sravanismily/swiggy:latest '
+                       sh "docker build -t swiggy ."
+                       sh "docker tag swiggy kastrov/swiggy:latest "
+                       sh "docker push kastrov/swiggy:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh 'trivy image kastrov/swiggy:latest > trivy.txt' 
+                sh "trivy image kastrov/swiggy:latest > trivy.txt" 
             }
         }
         stage('Deploy to container'){
             steps{
-                sh 'docker run -d --name swiggy -p 3000:3000 sravanismily/swiggy:latest'
+                sh 'docker run -d --name swiggy -p 3000:3000 kastrov/swiggy:latest'
             }
         }
     }
